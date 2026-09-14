@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU SDG Projekt Fotótár</title>
+    <style>
+        
+        :root {
+            --bg-color: #0b1329;
+            --card-bg: #152238;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --eu-blue: #003399;
+            --eu-yellow: #ffcc00;
+            --border-color: #2a3b5c;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            --modal-bg: #152238;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #0b1329;
+            --text-secondary: #475569;
+            --eu-blue: #003399;
+            --eu-yellow: #d9a700;
+            --border-color: #cbd5e1;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --modal-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        
+        header {
+            background-color: var(--eu-blue);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--eu-yellow);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .eu-flag-icon {
+            color: var(--eu-yellow);
+            font-size: 1.5rem;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        
+        main {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .img-wrapper {
+            width: 100%;
+            height: 230px;
+            overflow: hidden;
+            position: relative;
+            background-color: #000;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            -webkit-user-drag: none;
+            transition: filter 0.3s ease;
+        }
+
+        
+        .protected-blur {
+            filter: blur(20px) !important;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .img-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .download-btn {
+            background-color: var(--eu-blue);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #002266;
+        }
+
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: var(--modal-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .modal h3 {
+            margin-top: 0;
+        }
+
+        .modal input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-confirm { background-color: var(--eu-blue); color: white; }
+        .btn-close { background-color: var(--border-color); color: var(--text-color); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-brand">
+            <span class="eu-flag-icon">🇪🇺</span>
+            <span>SDG Projekt Fotótár</span>
+        </div>
+        <button class="theme-toggle-btn" id="themeToggle">
+            🌙 <span id="themeText">Sötét mód</span>
+        </button>
+    </header>
+
+    <main>
+        <div class="title-container">
+            <h1>Projekt Fotótár</h1>
+            <p class="subtitle">A projekt keretében feltöltött fotók gyűjteménye</p>
+        </div>
+
+        <div class="gallery"
+            <div class="card">
+                <div class="img-wrapper">
+                    <img src="pic1.png" alt="Fotó 1" class="protected-img">
+                </div>
+                <div class="card-body">
+                    <div class="img-title">pic1.png</div>
+                    <button class="download-btn" onclick="openDownloadModal('pic1.png')">Letöltés</button>
+                </div>
+            </div>
+
+            
+            <div class="card">
+                <div class="img-wrapper">
+                    <img src="pic2.png" alt="Fotó 2" class="protected-img">
+                </div>
+                <div class="card-body">
+                    <div class="img-title">pic2.png</div>
+                    <button class="download-btn" onclick="openDownloadModal('pic2.png')">Letöltés</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; Minden kép Buzas Benedek tulajdonában áll.</p>
+    </footer>
+
+    
+        <div class="modal-overlay" id="alertModal">
+        <div class="modal">
+            <h3 style="color: #ef4444;">🛡️ Védett Tartalom</h3>
+            <p id="alertMessage">A képek szerzői jog védelem alatt állnak! Kérjük használd a letöltés gombot.</p>
+            <button class="modal-btn btn-confirm" onclick="closeModal('alertModal')">Rendben</button>
+        </div>
+    </div>
+
+        <div class="modal-overlay" id="downloadModal">
+        <div class="modal">
+            <h3>🔒 Letöltési Kód</h3>
+            <p>A kép letöltéséhez add meg a kért jelszót:</p>
+            <input type="password" id="codeInput" placeholder="Kód megadása...">
+            <div class="modal-buttons">
+                <button class="modal-btn btn-close" onclick="closeModal('downloadModal')">Mégse</button>
+                <button class="modal-btn btn-confirm" onclick="verifyAndDownload()">Letöltés</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const HELYES_KOD = "NoPlanB11";
+        const VEDELMI_UZENET = "A képek szerzői jog védelem alatt állnak! Kérjük használd a letöltés gombot.";
+        let selectedImage = "";
+
+            const themeToggleBtn = document.getElementById('themeToggle');
+        const themeText = document.getElementById('themeText');
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeText.textContent = 'Világos mód';
+                themeToggleBtn.innerHTML = '☀️ <span>Világos mód</span>';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeText.textContent = 'Sötét mód';
+                themeToggleBtn.innerHTML = '🌙 <span>Sötét mód</span>';
+            }
+        });
+
+            function showAlert(msg) {
+            document.getElementById('alertMessage').textContent = msg;
+            document.getElementById('alertModal').classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+               document.querySelectorAll('.protected-img').forEach(img => img.classList.remove('protected-blur'));
+        }
+
+           const protectedImages = document.querySelectorAll('.protected-img');
+
+        function triggerProtection() {
+            protectedImages.forEach(img => img.classList.add('protected-blur'));
+            showAlert(VEDELMI_UZENET);
+        }
+
+            document.addEventListener('contextmenu', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                triggerProtection();
+            }
+        });
+
+            protectedImages.forEach(img => {
+            img.addEventListener('dragstart', (e) => {
+                e.preventDefault();
+                triggerProtection();
+            });
+        });
+
+            window.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText('');
+                }
+                triggerProtection();
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (
+                (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.key === 'p' || e.key === 'P')) ||
+                (e.key === 'PrintScreen')
+            ) {
+                e.preventDefault();
+                triggerProtection();
+            }
+        });
+
+            window.addEventListener('blur', () => {
+            protectedImages.forEach(img => img.classList.add('protected-blur'));
+        });
+
+            function openDownloadModal(imageSrc) {
+            selectedImage = imageSrc;
+            document.getElementById('codeInput').value = '';
+            document.getElementById('downloadModal').classList.add('active');
+        }
+
+        function verifyAndDownload() {
+            const inputKod = document.getElementById('codeInput').value;
+            
+            if (inputKod === HELYES_KOD) {
+                closeModal('downloadModal');
+                
+    
+                const a = document.createElement('a');
+                a.href = selectedImage;
+                a.download = selectedImage;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                closeModal('downloadModal');
+                showAlert("Helytelen kód! A letöltés megtagadva.");
+            }
+        }
+    </script>
+</body>
+</html>
